@@ -22,39 +22,37 @@ var iTunesApp = WScript.CreateObject("iTunes.Application");
 function getCurrentTrack() {
   var json = {};
   try {
-    var currentTrack = iTunesApp.currentTrack;
-    var remainingTime = parseInt(
-      currentTrack.duration - iTunesApp.PlayerPosition
-    );
-    switch (iTunesApp.PlayerState) {
-      case 1: {
-        var playerState = "playing";
-        break;
+      var currentTrack = iTunesApp.currentTrack;
+      var remainingTime = parseInt(currentTrack.duration - iTunesApp.PlayerPosition);
+      switch (iTunesApp.PlayerState) {
+          case 1: {
+              var playerState = "playing";
+              break;
+          }
+          case 0: {
+              if (currentTrack.name !== undefined) {
+                  var playerState = "paused";
+              } else {
+                  var playerState = "stopped";
+              }
+              break;
+          }
       }
-      case 0: {
-        if (currentTrack.name !== undefined) {
-          var playerState = "paused";
-        } else {
-          var playerState = "stopped";
-        }
-        break;
-      }
-    }
-    json = {
-      name: currentTrack.name,
-      artist: currentTrack.artist,
-      album: currentTrack.album,
-      mediaKind: currentTrack.kind,
-      duration: currentTrack.duration,
-      elapsedTime: iTunesApp.PlayerPosition,
-      remainingTime: remainingTime,
-      genre: currentTrack.genre,
-      releaseYear: currentTrack.year,
-      id: currentTrack.name, // I haven't found a way to get the current track ID with iTunes COM :/
-      playerState: playerState,
-    };
+      json = {
+          "name": currentTrack.name,
+          "artist": currentTrack.artist,
+          "album": currentTrack.album,
+          "mediaKind": currentTrack.kind,
+          "duration": currentTrack.duration,
+          "elapsedTime": iTunesApp.PlayerPosition,
+          "remainingTime": remainingTime,
+          "genre": currentTrack.genre,
+          "releaseYear": currentTrack.year,
+          "id": currentTrack.name, // I haven't found a way to get the current track ID with iTunes COM :/
+          "playerState": playerState
+      };
   } catch (e) {
-    json = { playerState: "stopped" };
+      json = { "playerState": "stopped" };
   }
 
   return encodeURI(JSON.stringify(json));
