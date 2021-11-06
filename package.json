@@ -5,7 +5,7 @@
   "main": "itunes-bridge.js",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/AngryKiller/iTunes-bridge.git"
+    "url": "git+https://github.com/ZephraCloud/iTunes-bridge.git"
   },
   "scripts": {
     "example": "node example.js",
@@ -25,9 +25,9 @@
   "author": "AngryKiller <angrykiller@icloud.com>",
   "license": "GPL-3.0",
   "bugs": {
-    "url": "https://github.com/AngryKiller/iTunes-bridge/issues"
+    "url": "https://github.com/ZephraCloud/iTunes-bridge/issues"
   },
-  "homepage": "https://github.com/AngryKiller/iTunes-bridge#readme",
+  "homepage": "https://github.com/ZephraCloud/iTunes-bridge#readme",
   "dependencies": {
     "@johnpaulvaughan/itunes-music-library-path": "^2.0.2",
     "compare-versions": "^3.6.0",
