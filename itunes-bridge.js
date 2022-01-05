@@ -280,10 +280,14 @@ exports.isRunning = function () {
   if (process.platform === "darwin") {
     try {
       if (compver.compare(os.release(), "19.0.0", ">=")) {
-        execSync('pgrep -x "Music"');
+        execSync('pgrep -x "Music"', {
+          windowsHide: true
+        });
         return true;
       } else {
-        execSync('pgrep -x "iTunes"');
+        execSync('pgrep -x "iTunes"', {
+          windowsHide: true
+        });
         return true;
       }
     } catch (err) {
@@ -291,7 +295,9 @@ exports.isRunning = function () {
     }
   } else if (process.platform === "win32") {
     try {
-      execSync('tasklist | find "iTunes.exe"');
+      execSync('tasklist | find "iTunes.exe"', {
+        windowsHide: true
+      });
       return true;
     } catch (err) {
       return false;
@@ -311,16 +317,22 @@ function runScript(req, type, args, isJson) {
       case "fetch": {
         if (isJson) {
           return JSON.parse(
-            execSync("osascript " + iTunesFetcherScpt + " " + req)
+            execSync("osascript " + iTunesFetcherScpt + " " + req, {
+              windowsHide: true
+            })
           );
         } else {
-          return execSync("osascript " + iTunesFetcherScpt + " " + req);
+          return execSync("osascript " + iTunesFetcherScpt + " " + req, {
+            windowsHide: true
+          });
         }
         break;
       }
       case "control": {
         try {
-          execSync("osascript " + iTunesCtrlScpt + " " + req + " " + args);
+          execSync("osascript " + iTunesCtrlScpt + " " + req + " " + args, {
+            windowsHide: true
+          });
         } catch (e) {
           console.error(e);
         }
@@ -341,21 +353,23 @@ function runScript(req, type, args, isJson) {
             decodeURI(
               execSync("cscript //Nologo " + iTunesFetcherScpt + " " + req, {
                 encoding: "utf8",
+                windowsHide: true
               })
             )
           );
         } else {
           return execSync("cscript //Nologo " + iTunesFetcherScpt + " " + req, {
             encoding: "utf8",
+            windowsHide: true
           });
         }
         break;
       }
       case "control": {
         try {
-          execSync(
-            "cscript //Nologo " + iTunesCtrlScpt + " " + req + " " + args
-          );
+          execSync("cscript //Nologo " + iTunesCtrlScpt + " " + req + " " + args, {
+            windowsHide: true
+          });
         } catch (e) {
           console.error(e);
         }
