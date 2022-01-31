@@ -11,6 +11,7 @@
 var exports = (module.exports = {});
 var fs = require("fs");
 var { execSync } = require("child_process");
+var { exec } = require("child-process-promise");
 var events = require("events");
 var event = new events.EventEmitter();
 var plist = require("plist");
@@ -48,12 +49,41 @@ var that = this;
   "id":2630,
   "playerState":"playing"}
  */
-exports.getCurrentTrack = function () {
+exports.getCurrentTrack = async function () {
   if (exports.isRunning()) {
-    try {
-      return runScript("getCurrentTrack", "fetch", undefined, true);
-    } catch (e) {
-      console.log(e);
+    if (process.platform === "darwin") {
+      try {
+        const currentTrack = (await exec(`osascript ${path.resolve(`${__dirname}/jxa/iTunesFetcher.scpt`)}`)).stdout;
+
+        if (currentTrack === "stopped") return { playerState: "stopped" };
+        else {
+          const track = currentTrack.replace(/\n/g, "").split(" -AMRPC- ");
+
+          track[5] = parseFloat(track[5].replace(/,/g, "."));
+          track[6] = parseFloat(track[6].replace(/,/g, "."));
+
+          return {
+            name: track[2],
+            artist: track[1],
+            album: track[3],
+            mediaKind: track[4],
+            duration: track[5],
+            elapsedTime: track[6],
+            remainingTime: track[5] - track[6],
+            genre: track[7],
+            id: track[8],
+            playerState: track[0]
+          }
+        }
+      } catch (e) {
+        console.log(e);
+      }
+    } else {
+      try {
+        return runScript("getCurrentTrack", "fetch", undefined, true);
+      } catch (e) {
+        console.log(e);
+      }
     }
   } else {
     return { playerState: "stopped" };
@@ -192,8 +222,8 @@ exports.getTrackCount = function () {
 // Starting the event system (track change and player state change)
 const intervalT = config.get("performanceMode") ? 1750 : 1000;
 that.currentTrack = null;
-setInterval(function () {
-  let currentTrack = exports.getCurrentTrack();
+setInterval(async function () {
+  let currentTrack = await exports.getCurrentTrack();
   if (currentTrack && that.currentTrack) {
     if (
       currentTrack.remainingTime !== that.currentTrack.remainingTime &&
