@@ -55,7 +55,7 @@ exports.getCurrentTrack = async function () {
       try {
         const currentTrack = (await exec(`osascript ${path.resolve(`${__dirname.replace("app.asar", "app.asar.unpacked")}/jxa/iTunesFetcher.scpt`)}`)).stdout;
 
-        if (currentTrack === "stopped") return { playerState: "stopped" };
+        if (!currentTrack || currentTrack === "stopped") return { playerState: "stopped" };
         else {
           const track = currentTrack.replace(/\n/g, "").split(" -AMRPC- ");
 
