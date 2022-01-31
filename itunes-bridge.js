@@ -53,7 +53,7 @@ exports.getCurrentTrack = async function () {
   if (exports.isRunning()) {
     if (process.platform === "darwin") {
       try {
-        const currentTrack = (await exec(`osascript ${path.resolve(`${__dirname}/jxa/iTunesFetcher.scpt`)}`)).stdout;
+        const currentTrack = (await exec(`osascript ${path.resolve(`${__dirname.replace("app.asar", "app.asar.unpacked")}/jxa/iTunesFetcher.scpt`)}`)).stdout;
 
         if (currentTrack === "stopped") return { playerState: "stopped" };
         else {
